@@ -10,25 +10,20 @@ def home(request):
     # Выводим их в консоль
     for product in latest_products:
         print(f"{product.name} - {product.price} руб.")  # или другой вывод, который вам нужен
-
-    # Отправляем данные в шаблон
     context = {'latest_products': latest_products}
     return render(request, 'home.html', context)
 
-# def contacts(request):
-#     if request.method == 'POST':
-#         # Получение данных из формы
-#         name = request.POST.get('name')
-#         message = request.POST.get('message')
-#         # Обработка данных (например, сохранение в БД, отправка email и т. д.)
-#         # Здесь мы просто возвращаем простой ответ
-#         return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
-#     return render(request, 'contacts.html')
+def contacts_us(request):
+    if request.method == 'POST':
+        # Получение данных из формы
+        name = request.POST.get('name')
+        message = request.POST.get('message')
+        # Обработка данных (например, сохранение в БД, отправка email и т. д.)
+        # Здесь мы просто возвращаем простой ответ
+        return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
+    return render(request, 'contacts.html')
 
 
 def contacts(request):
-    # Получаем все контактные данные из базы
-    contacts = ContactInfo.objects.all()  # здесь заменили Contact на ContactInfo
-
-    # Передаем данные в шаблон
+    contacts = ContactInfo.objects.all()
     return render(request, 'contacts.html', {'contacts': contacts})
