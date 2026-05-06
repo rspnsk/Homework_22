@@ -1,10 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Skystore</title>
-    <!-- Подключите статичеcкие файлы со стилями Bootstrap -->
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
 </head>
 <body>
@@ -26,18 +25,20 @@
             <div class="card mb-4 box-shadow">
                 <div class="card-body">
                     <table class="table table-striped">
-                        <tr>
-                            <td class="w-25">Страна</td>
-                            <td>USA</td>
-                        </tr>
-                        <tr>
-                            <td class="w-25">ИНН</td>
-                            <td>91-1144442</td>
-                        </tr>
-                        <tr>
-                            <td class="w-25">Адрес</td>
-                            <td>Redmond,WA,98052-6399</td>
-                        </tr>
+                        {% for contact in contacts %}
+                            <tr>
+                                <td class="w-25">Страна</td>
+                                <td>{{ contact.country }}</td>  <!-- Используем поле country -->
+                            </tr>
+                            <tr>
+                                <td class="w-25">ИНН</td>
+                                <td>{{ contact.inn }}</td>  <!-- Используем поле inn -->
+                            </tr>
+                            <tr>
+                                <td class="w-25">Адрес</td>
+                                <td>{{ contact.address }}</td>  <!-- Используем поле address -->
+                            </tr>
+                        {% endfor %}
                     </table>
                 </div>
             </div>
@@ -73,7 +74,7 @@
         <div class="row">
             <div class="col-12 col-md">
                 SkyStore
-                <small class="d-block mb-3 text-muted">&copy; 2023</small>
+                <small class="d-block mb-3 text-muted">© 2023</small>
             </div>
             <div class="col-6 col-md">
                 <h5>Категории</h5>
@@ -101,7 +102,6 @@
     </footer>
 </div>
 
-<!-- Подключите статичеcкие файлы со скриптами Bootstrap -->
 <script src="/static/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

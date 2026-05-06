@@ -1,0 +1,57 @@
+[
+{
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+        "name": "продукты",
+        "description": "продукты питания и напитки"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+        "name": "книги",
+        "description": "художественная и техническая литература"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+        "name": "молоко",
+        "description": "молоко натуральное",
+        "image": "",
+        "category": 2,
+        "price": "110.00",
+        "created_at": "2026-04-28T20:13:42.713Z",
+        "updated_at": "2026-04-28T20:13:42.713Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+        "name": "хлеб",
+        "description": "свежий хлеб",
+        "image": "",
+        "category": 2,
+        "price": "60.00",
+        "created_at": "2026-04-28T20:14:46.947Z",
+        "updated_at": "2026-04-28T20:14:46.947Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 4,
+    "fields": {
+        "name": "Война и Мир",
+        "description": "роман Л.Н.Толстой",
+        "image": "",
+        "category": 3,
+        "price": "800.00",
+        "created_at": "2026-04-28T20:21:11.565Z",
+        "updated_at": "2026-04-28T20:21:11.565Z"
+    }
+}
+]
