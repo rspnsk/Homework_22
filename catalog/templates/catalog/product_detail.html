@@ -1,7 +1,6 @@
-{% extends 'catalog/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-<body>
 <div class="container mt-5">
     <h1> Информация о продукте </h1>
     <p>Наименование: {{product.name}}</p>
@@ -10,5 +9,7 @@
     <p>Цена за покупку: {{product.price}}</p>
     <p>Изображение: <img src="{{ product.image.url }}" class="img-fluid rounded" style="height: 200px; width: 200px;"
                          alt="{{ product.name }}"></p>
+    <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-secondary">Редактировать</a>
+    <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">Удалить</a>
 </div>
 {% endblock %}

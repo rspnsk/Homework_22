@@ -1,55 +1,58 @@
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
 from .models import Category, Product, ContactInfo
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProductForm
+from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from django.views import View
 
 
-def home(request):
-    # Получаем последние 3 созданных продукта
-    latest_products = Product.objects.order_by('-created_at')[:3]
+class ProductsListView(ListView):
+    model = Product
+    template_name = 'catalog/products_list.html'
+    context_object_name = 'products'
 
-    # Выводим их в консоль
-    for product in latest_products:
-        print(f"{product.name} - {product.price} руб.")  # или другой вывод, который нам нужен
-    context = {'latest_products': latest_products}
-    return render(request, 'catalog/home.html', context)
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
+    context_object_name = 'product'
 
-def contacts_us(request):
-    if request.method == 'POST':
-        # Получение данных из формы
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ['name', 'description', 'image', 'category', 'price']
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('catalog:products_list')
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    fields = ['name', 'description', 'image', 'category', 'price']
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('catalog:products_list')
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'catalog/product_confirm_delete.html'
+    success_url = reverse_lazy('catalog:products_list')
+
+class ContactsView(TemplateView):
+    template_name = 'catalog/contacts.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['contacts'] = ContactInfo.objects.all()
+        return context
+
+class ContactsUsView(View):
+    def get(self, request):
+        return render(request, 'catalog/contacts.html')
+
+    def post(self, request):
         name = request.POST.get('name')
         message = request.POST.get('message')
-        # Здесь мы просто возвращаем простой ответ
         return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
-    return render(request, 'catalog/contacts.html')
-
-
-def contacts(request):
-    contacts = ContactInfo.objects.all()
-    return render(request, 'catalog/contacts.html', {'contacts': contacts})
-
-def product_detail(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    context = {'product': product}
-    return render(request, 'catalog/product_detail.html', context)
-
-def product_list(request):
-    products = Product.objects.all()
-    context = {'products': products}
-    return render(request, 'catalog/product_list.html', context)
 
 def base(request):
     products = Product.objects.all()
     context = {'products': products}
     return render(request, 'catalog/base.html', context)
-
-def add_product(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('catalog:product_list')
-    else:
-        form = ProductForm()
-    return render(request, 'catalog/add_product.html', {'form': form})
