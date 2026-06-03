@@ -6,8 +6,8 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('base/', TemplateView.as_view(template_name='base.html'), name='home'),
-    path('catalog/', include('catalog.urls', namespace='catalog')),
+    path('base/', TemplateView.as_view(template_name='base.html'), name='base'),
+    path('', include('catalog.urls')),
     path('', include('blog.urls')),
 ]
 if settings.DEBUG:

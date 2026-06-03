@@ -219,3 +219,5 @@ __marimo__/
 "__pycache__/" 
 "*.log" 
 "__pycache__/" 
+
+qodana.yaml
