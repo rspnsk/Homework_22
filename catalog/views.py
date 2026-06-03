@@ -77,3 +77,7 @@ class CategoryUpdateView(UpdateView):
     form_class = CategoryForm
     template_name = 'catalog/category_form.html'
     success_url = reverse_lazy('catalog:categories_list')
+
+
+class BaseView(TemplateView):
+    template_name = 'base.html'
