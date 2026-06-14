@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from .models import Blog
 from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class BlogListView(ListView):
     model = Blog
@@ -26,13 +27,13 @@ class BlogDetailView(DetailView):
         obj.save(update_fields=['views_count'])
         return obj
 
-class BlogCreateView(CreateView):
+class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
     fields = ['title', 'content', 'preview', 'is_published']
     template_name = 'blog/blog_form.html'
     success_url = reverse_lazy('blog:blog_list')
 
-class BlogUpdateView(UpdateView):
+class BlogUpdateView(LoginRequiredMixin, UpdateView):
     model = Blog
     fields = ['title', 'content', 'preview', 'is_published']
     template_name = 'blog/blog_form.html'

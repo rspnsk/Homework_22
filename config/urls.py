@@ -9,6 +9,7 @@ urlpatterns = [
     path('base/', TemplateView.as_view(template_name='base.html'), name='base'),
     path('', include('catalog.urls')),
     path('', include('blog.urls')),
+    path('', include('users.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
