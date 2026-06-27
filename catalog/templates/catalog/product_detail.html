@@ -9,7 +9,24 @@
     <p>Цена за покупку: {{product.price}}</p>
     <p>Изображение: <img src="{{ product.image.url }}" class="img-fluid rounded" style="height: 200px; width: 200px;"
                          alt="{{ product.name }}"></p>
-    <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-secondary">Редактировать</a>
-    <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">Удалить</a>
+
+    {# 1. Закрываем проверку для редактирования своим endif #}
+    {% if request.user == product.owner or request.user.is_superuser %}
+        <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-secondary">Редактировать</a>
+    {% endif %}
+
+    {# 2. Отдельная независимая проверка для удаления со своим endif #}
+    {% if request.user == product.owner or request.user.is_superuser or "catalog.delete_product" in perms %}
+        <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">Удалить</a>
+    {% endif %}
 </div>
+
+{% if "catalog.can_unpublish_product" in perms %}
+    <form action="{% url 'catalog:product_unpublish' product.pk %}" method="post" class="container mt-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning">Снять с публикации</button>
+    </form>
+{% endif %}
+
 {% endblock %}
+
