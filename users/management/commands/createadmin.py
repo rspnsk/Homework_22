@@ -16,3 +16,6 @@ class Command(BaseCommand):
         except Exception as e:
             # если пользователь с таким email уже существует
             self.stdout.write(self.style.ERROR(f'Ошибка при создании суперпользователя:{e}'))
+
+
+

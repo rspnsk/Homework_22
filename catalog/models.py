@@ -1,4 +1,9 @@
 from django.db import models
+from django.conf import settings
+from django.contrib.auth import get_user_model
+
+# используем get_user_model(), чтобы код работал и с кастомной моделью пользователя
+User = get_user_model()
 
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="Наименование")
@@ -20,6 +25,34 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена за покупку")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата последнего изменения")
+    owner = models.ForeignKey(
+        User,  # Связываем с моделью пользователя
+        on_delete=models.CASCADE,  # Если пользователь удален, его продукты тоже удаляются
+        verbose_name='Владелец продукта',
+        related_name='products',  # Позволит получить все продукты пользователя через user.products.all()
+        blank = True,
+        null = True  # null=True нужно, если в базе уже есть продукты без владельца
+    )
+
+    # Определяем константы для статусов
+    STATUS_DRAFT = 'draft'
+    STATUS_PUBLISHED= 'published'
+    STATUS_UNPUBLISHED = 'unpublished'
+
+    # 2. Создаем список выбора
+    PRODUCT_STATUSES = [
+        (STATUS_DRAFT, 'Черновик'),
+        (STATUS_PUBLISHED, 'Опубликован'),
+        (STATUS_UNPUBLISHED, 'Снят с публикации'),
+    ]
+
+    # 3. Добавляем новое поле со списком выбора
+    published_status = models.CharField(
+        verbose_name='Статус публикации',
+        max_length=20,
+        choices=PRODUCT_STATUSES,
+        default=STATUS_DRAFT, # По умолчанию товар будет черновиком
+    )
 
     def __str__(self):
         return self.name
@@ -27,7 +60,12 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
-        ordering = ['name']
+        ordering = ['published_status']
+        # Добавляем кастомные разрешения
+        permissions = [
+            ("can_unpublish_product", "может отменять публикацию продукта"),
+            ("can_delete_product", "может удалять продукт"),
+        ]
 
 class ContactInfo(models.Model):
     name = models.CharField(max_length=100, verbose_name="Имя")
