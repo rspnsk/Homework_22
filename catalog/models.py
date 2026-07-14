@@ -1,6 +1,7 @@
 from django.db import models
-from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
+
 
 # используем get_user_model(), чтобы код работал и с кастомной моделью пользователя
 User = get_user_model()
@@ -53,6 +54,24 @@ class Product(models.Model):
         choices=PRODUCT_STATUSES,
         default=STATUS_DRAFT, # По умолчанию товар будет черновиком
     )
+
+    # переопределяем метод save, чтобы сайт обновлялся мгновенно,
+    # кеш нужно сбрасывать в момент сохранения или удаления продукта.
+    def save(self, *args, **kwargs):
+        # Перед сохранением формируем ключ кеша для категории этого продукта
+        if self.category_id:
+            cache_key = f'products_cat_{self.category_id}'
+            cache.delete(cache_key)  # Удаляем старый кеш
+
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # При удалении продукта также очищаем кеш категории
+        if self.category_id:
+            cache_key = f'products_cat_{self.category_id}'
+            cache.delete(cache_key)
+
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.name
